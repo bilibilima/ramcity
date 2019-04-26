@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.dao.FoodDao">
+	<resultMap type="Food" id="FoodMap">
+	     
+		<id property="foodId" column="foodId"/>
+		<result property="foodType" column="foodType"/>
+		
+		<!-- <result property="fwriteId" column="fwriteId"/> -->
+		
+		<result property="article.writeId" column="writeId"/>
+		<result property="article.writeTitle" column="writeTitle"/>
+		
+		<result property="foodName" column="foodName"/>
+		<result property="foodPhoto" column="foodPhoto"/>
+			
+	</resultMap>
+	
+	
+	<!-- 多表查询语句，替换原来分页查询一部分sql语句，主要要和原来的语句结合 -->
+	<sql id="selectSql">
+			select f.foodId,f.foodType,f.fwriteId,a.writeTitle,f.foodName,f.foodPhoto 
+			from food f,article a 
+			where f.fwriteId = a.writeId
+	</sql>	
+	
+	
+	<select id="findAll" resultMap="FoodMap" parameterType="java.util.Map">
+		<!-- select * from food LIMIT #{startPage},#{endPage} -->
+				<!-- 分页查询SQL语句，MySQL使用limit进行分页查询 -->
+		<include refid="selectSql" /> LIMIT #{startPage},#{endPage}
+	</select>
+
+	
+	<select id="findList" resultType="Food">
+		SELECT * FROM food
+	</select>	
+	
+	
+	<select id="countFood" resultType="java.lang.Integer">
+		select count(1) from food
+	</select>
+	
+	
+	<insert id="addFood" parameterType="Food">
+			INSERT INTO food (foodType,fwriteId,foodName,foodPhoto) 
+			VALUES (#{foodType},#{article.writeId},#{foodName},#{foodPhoto})
+	</insert>
+	
+	
+	<update id="updateFood" parameterType="Food">
+			UPDATE food SET foodType = #{foodType},fwriteId = #{article.writeId},foodName =#{foodName},foodPhoto =#{foodPhoto}
+			WHERE foodId =#{foodId}
+	</update>
+	
+	
+	<delete id="deleteFood" parameterType="java.lang.Integer">
+		DELETE FROM food WHERE foodId = #{foodId}
+	</delete>
+</mapper>

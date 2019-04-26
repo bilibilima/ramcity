@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.dao.TeamDao">
+	<resultMap type="Team" id="TeamMap">
+	     
+		<id property="teamId" column="teamId"/>
+		<result property="content" column="content"/>
+			
+	</resultMap>
+	
+	
+	<select id="findAll" resultMap="TeamMap" parameterType="java.util.Map">
+		select * from team LIMIT #{startPage},#{endPage}
+	</select>
+	
+	
+	<select id="countTeam" resultType="java.lang.Integer">
+		select count(1) from team
+	</select>
+	
+	
+	<insert id="addTeam" parameterType="Team">
+		INSERT INTO team (content) 
+		VALUES (#{content})
+	</insert>
+	
+	
+	<update id="updateTeam" parameterType="Team">
+		UPDATE team SET content = #{content}
+		WHERE teamId =#{teamId}
+	</update>
+	
+	
+	<delete id="deleteTeam" parameterType="java.lang.Integer">
+		DELETE FROM team WHERE teamId = #{teamId}
+	</delete>
+</mapper>

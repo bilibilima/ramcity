@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.dao.SpotsDao">
+	<resultMap type="Spots" id="SpotsMap">
+	     
+		<id property="spotsId" column="spotsId"/>
+		<result property="spotsType" column="spotsType"/>
+		
+		<result property="article.writeId" column="writeId"/>
+		<result property="article.writeTitle" column="writeTitle"/>
+		
+		<result property="spotsName" column="spotsName"/>
+		<result property="spotsImage" column="spotsImage"/>
+			
+	</resultMap>
+	
+	<!-- 多表查询语句，替换原来分页查询一部分sql语句，主要要和原来的语句结合 -->
+	<sql id="selectSql">
+			select s.spotsId,s.spotsType,s.swriteId,a.writeTitle,s.spotsName,s.spotsImage 
+			from spots s,article a 
+			where s.swriteId = a.writeId
+	</sql>	
+	
+	<select id="findAll" resultMap="SpotsMap" parameterType="java.util.Map">
+		<include refid="selectSql" /> LIMIT #{startPage},#{endPage}
+	</select>	
+		
+	
+	<!-- 前台 -->
+	<resultMap type="Spots" id="f_SpotsMap">
+	     
+		<id property="spotsId" column="spotsId"/>
+		<result property="spotsType" column="spotsType"/>
+		
+		<result property="article.writeId" column="writeId"/>
+		<result property="article.writeTitle" column="writeTitle"/>
+		
+		<result property="spotsName" column="spotsName"/>
+		<result property="spotsImage" column="spotsImage"/>
+			
+	</resultMap>	
+	
+	
+	<!-- 前台查询语句，替换原来分页查询一部分sql语句，主要要和原来的语句结合 -->
+	<sql id="f_selectSql">
+				select s.spotsName,s.spotsImage,s.spotsId,s.swriteId,a.writeText,a.writeTitle
+				from spots s,article a where s.swriteId=a.writeId
+	</sql>	
+	
+	<select id="findSpots" resultMap="f_SpotsMap" parameterType="java.util.Map">
+		<include refid="f_selectSql" /> LIMIT #{startPage},#{endPage}
+	</select>
+
+	
+	
+	<select id="countSpots" resultType="java.lang.Integer">
+		select count(1) from spots
+	</select>
+	
+	
+	<insert id="addSpots" parameterType="Spots">
+				INSERT INTO spots (spotsType,swriteId,spotsName,spotsImage) 
+				VALUES (#{spotsType},#{article.writeId},#{spotsName},#{spotsImage})
+	</insert>
+	
+	
+	<update id="updateSpots" parameterType="Spots">
+				UPDATE spots SET spotsType = #{spotsType},swriteId = #{article.writeId},spotsName =#{spotsName},spotsImage =#{spotsImage} 
+				WHERE spotsId =#{spotsId}
+	</update>
+	
+	
+	<delete id="deleteSpots" parameterType="java.lang.Integer">
+		DELETE FROM spots WHERE spotsId = #{spotsId}
+	</delete>
+</mapper>

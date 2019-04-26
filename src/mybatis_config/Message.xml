@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.dao.MessageDao">
+	<resultMap type="Message" id="MessageMap">
+	     
+		<id property="mid" column="mid"/>
+		<result property="tel" column="tel"/>
+		<result property="sex" column="sex"/>
+		<result property="name" column="name"/>
+		<result property="text" column="text"/>
+		<result property="messTime" column="messTime"/>
+		<result property="messType" column="messType"/>			
+	</resultMap>
+	
+	
+	<select id="findAll" resultMap="MessageMap" parameterType="java.util.Map">
+		select * from message LIMIT #{startPage},#{endPage}
+	</select>
+	
+	
+	<select id="countMessage" resultType="java.lang.Integer">
+		select count(1) from message
+	</select>
+	
+	
+	<insert id="addMessage" parameterType="Message">
+		INSERT INTO message (tel, sex,name,text,messTime,messType) 
+		VALUES (#{tel},#{sex},#{name},#{text},#{messTime},#{messType})
+	</insert>
+	
+	
+	<update id="updateMessage" parameterType="Message">
+		UPDATE message SET tel = #{tel},sex =#{sex},name =#{name},text =#{text},messTime =#{messTime},messType =#{messType}
+		WHERE mid =#{mid}
+	</update>
+	
+	
+	<delete id="deleteMessage" parameterType="java.lang.Integer">
+		DELETE FROM message WHERE mid = #{mid}
+	</delete>
+</mapper>
